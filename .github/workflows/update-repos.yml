@@ -16,9 +16,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.repo }}
         run: |
-          # Fetch repositories with the topic "featured" from the GitHub API
-          curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.mercy-preview+json" "https://api.github.com/users/bharatveeryadav/repos?per_page=100" \
-| jq -r '.[] | select(.topics | index("DevOps-Project")) | "- [\(.name)](\(.html_url))"' > REPO_LIST.md
+         # Fetch repositories with the topic "featured" from the GitHub API
+          curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/users/bharatveeryadav/repos?per_page=100" \
+          | jq -r '.[] | select(.topics | index("DevOps")) | "- [\(.name)](\(.html_url))"' > REPO_LIST.md
+          
+
+
 
       - name: Commit and Push Changes
         run: |
