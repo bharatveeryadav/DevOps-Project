@@ -1,0 +1,30 @@
+name: Update Selected Repository List
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily
+  workflow_dispatch:
+
+jobs:
+  update-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Fetch Selected Repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+        run: |
+          # Fetch repositories with the topic "featured" from the GitHub API
+          curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/users/bharatveeryadav/repos?per_page=100" \
+          | jq -r '.[] | select(.topics | index("devops")) | "- [\(.name)](\(.html_url))"' > REPO_LIST.md
+          
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "bharatveeryadavg@gmail.com"
+          git config --local user.name "bharatveeryadav"
+          cp REPO_LIST.md README.md
+          git add README.md
+          git commit -m "Update selected repository list"
+          git push
