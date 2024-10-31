@@ -15,7 +15,7 @@ jobs:
 
       - name: Create new branch
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKENs }}
+          GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
         run: |
           # Define variables
           OWNER='bharatveeryadav'  # Change this to your GitHub username or organization
