@@ -1,36 +1,50 @@
-name: Update Selected Repository List
+name: Fetch Repositories with Prefix
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Runs daily
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  update-list:
+  fetch_repos:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Fetch Selected Repositories
-        env:
-          GITHUB_TOKEN: ${{ secrets.repo }}
+      - name: Fetch repositories
+        id: fetch_repos
         run: |
-         # Fetch repositories with the topic "DevOps-Project" from the GitHub API
-          curl -s -H "Authorization: token $repo" "https://api.github.com/users/bharatveeryadav/repos?per_page=100" \
-          | jq -r '.[] | select(.name | index("DevOps-Project")) | "- [\(.name)](\(.html_url))"' > REPO_LIST.md
+          USERNAME='bharatveeryadav'  # Change this to your GitHub username or organization
+          PREFIX='DevOps-Project'              # Change this to your desired prefix
+
+          response=$(curl -s -H "Authorization: token ${{ secrets.REPO }}" "https://api.github.com/users/$USERNAME/repos")
+
+          # Create or clear README.md
+          echo "# My Projects" > README.md
+          echo "" >> README.md
+          echo "Welcome to my collection of projects! Here are some of my repositories:" >> README.md
+          echo "" >> README.md
+          echo "## Projects" >> README.md
+          echo "" >> README.md
+
+          # Filter repositories by prefix and format the output
+          repos=$(echo "$response" | jq -r --arg PREFIX "$PREFIX" '.[] | select(.name | startswith($PREFIX)) | .name')
           
+          for repo in $repos; do
+            echo "- [$repo](https://github.com/$USERNAME/$repo)" >> README.md
+          done
 
+          echo "" >> README.md
+          echo "## More Repositories" >> README.md
+          echo "" >> README.md
+          echo "You can find more of my repositories on my [GitHub profile](https://github.com/$USERNAME)." >> README.md
 
-
-      - name: Commit and Push Changes
+      - name: Commit and push changes
         run: |
-          git config --local user.email "bharatveeryadavg@gmail.com"
-          git config --local user.name "bharatveeryadav"
-          cp REPO_LIST.md README.md
+          git config --local user.email "you@example.com" # Replace with your email
+          git config --local user.name "Your Name"        # Replace with your name
           git add README.md
-          git commit -m "Update selected repository list"
+          git commit -m "Update README with repositories"
           git push
-
-
-
