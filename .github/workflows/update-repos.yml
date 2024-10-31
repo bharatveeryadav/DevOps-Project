@@ -1,4 +1,4 @@
-name: Fetch Repositories with Prefix
+name: Create New Branch
 
 on:
   push:
@@ -6,29 +6,28 @@ on:
       - main
 
 jobs:
-  fetch_repos:
+  create_branch:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Fetch repositories
-        id: fetch_repos
+      - name: Create new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
         run: |
-          # Define the username and prefix
-          USERNAME='bharatveeryadav'  # Change this to your GitHub username or organization
-          PREFIX='FindRepos'            # Change this to your desired prefix
+          # Define variables
+          OWNER='bharatveeryadav'  # Change this to your GitHub username or organization
+          REPO='DevOps-Project'              # Change this to your repository name
+          NEW_BRANCH='new-branch-name'  # Change this to your new branch name
+          BASE_BRANCH='main'            # Change this to the base branch name
 
-          # Make the API request to fetch repositories
-          response=$(curl -s -H "Authorization: token ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}" "https://api.github.com/users/$USERNAME/repos")
+          # Get the latest commit SHA from the base branch
+          BASE_SHA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$OWNER/$REPO/git/refs/heads/$BASE_BRANCH" | jq -r '.object.sha')
 
-          # Filter repositories by prefix
-          repos=$(echo "$response" | jq -r --arg PREFIX "$PREFIX" '.[] | select(.name | startswith($PREFIX)) | .name')
-
-          # Print the repositories
-          echo "Repositories with prefix '$PREFIX':"
-          echo "$repos"
-
-          # Optionally, set the output
-          echo "::set-output name=repos::$repos"
+          # Create the new branch
+          curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+            -d "{\"ref\": \"refs/heads/$NEW_BRANCH\", \"sha\": \"$BASE_SHA\"}" \
+            "https://api.github.com/repos/$OWNER/$REPO/git/refs"
