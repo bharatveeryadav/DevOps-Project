@@ -18,7 +18,7 @@ jobs:
         run: |
           # Define the username and prefix
           USERNAME='BHARATVEERYADAV'  # Change this to your GitHub username or organization
-          PREFIX='DevOps-Project-1'              # Change this to your desired prefix
+          PREFIX='60DaysOfDevOps'              # Change this to your desired prefix
           OUTPUT_DIR='projects'              # Directory to clone projects
 
           # Create output directory
