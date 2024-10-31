@@ -16,20 +16,15 @@ jobs:
       - name: Fetch repositories
         id: fetch_repos
         run: |
-          # Define the username and prefix
-          USERNAME='BHARATVEERYADAV'  # Change this to your GitHub username or organization
-          PREFIX='60DaysOfDevOps'              # Change this to your desired prefix
-          OUTPUT_DIR='projects'              # Directory to clone projects
-
-          # Create output directory
+          USERNAME='BHARATVEERYADAV'
+          PREFIX='DevOps-Project'
+          OUTPUT_DIR='projects'
+          
           mkdir $OUTPUT_DIR
-
-          # Make the API request to fetch repositories
-          response=$(curl -s -H "Authorization: token ${{ secrets.REPO }}" "https://api.github.com/users/$USERNAME/repos")
-
-          # Filter repositories by prefix and clone them
+          
+          response=$(curl -s -H "Authorization: token ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}" "https://api.github.com/users/$USERNAME/repos")
+          
           echo "$response" | jq -r --arg PREFIX "$PREFIX" '.[] | select(.name | startswith($PREFIX)) | .clone_url' | while read -r repo; do
-            # Clone each repository into the output directory
             git clone "$repo" "$OUTPUT_DIR/$(basename $repo .git)"
           done
 
