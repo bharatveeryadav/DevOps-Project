@@ -15,12 +15,12 @@ jobs:
 
       - name: Create new branch
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKENs }}
         run: |
           # Define variables
           OWNER='bharatveeryadav'  # Change this to your GitHub username or organization
           REPO='DevOps-Project'              # Change this to your repository name
-          NEW_BRANCH='new-branch-name'  # Change this to your new branch name
+          NEW_BRANCH='new-'  # Change this to your new branch name
           BASE_BRANCH='main'            # Change this to the base branch name
 
           # Get the latest commit SHA from the base branch
