@@ -6,3 +6,4 @@ This repository contains projects related to the topic 'devops'.
 
 - [DevOps-Project-1](https://github.com/bharatveeryadav/DevOps-Project-1.git)
 - [DevOps-Project](https://github.com/bharatveeryadav/DevOps-Project.git)
+- [DevOps-Project-2](https://github.com/bharatveeryadav/DevOps-Project-2.git)
